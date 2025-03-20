@@ -15,7 +15,11 @@ declare module 'express-serve-static-core' {
 	}
 }
 
-export async function auth(req: Request, res: Response, next: NextFunction): Promise<void> {
+export async function auth(
+	req: Request,
+	res: Response,
+	next: NextFunction
+): Promise<void> {
 	const token = req.header('x-auth-token');
 
 	if (!token) {
@@ -24,7 +28,10 @@ export async function auth(req: Request, res: Response, next: NextFunction): Pro
 	}
 
 	try {
-		const decodedToken = jwt.verify(token, process.env.JWT_SECRET as string) as DecodedToken;
+		const decodedToken = jwt.verify(
+			token,
+			process.env.JWT_SECRET as string
+		) as DecodedToken;
 		req.user = decodedToken;
 		next();
 	} catch (err) {

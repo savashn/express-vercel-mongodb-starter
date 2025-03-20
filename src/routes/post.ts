@@ -9,35 +9,36 @@ import { auth } from '../middlewares/authenticator';
 
 const router = Router();
 
-router.post('/register', validator(register), async (req: Request, res: Response) => {
-	const user = await User.findOne({
-		$or: [{ username: req.body.username }, { email: req.body.email }]
-	});
+router.post(
+	'/register',
+	validator(register),
+	async (req: Request, res: Response) => {
+		const user = await User.findOne({
+			$or: [{ username: req.body.username }, { email: req.body.email }]
+		});
 
-	if (user) {
-		res.status(400).send('This user is already exists.');
-		return;
+		if (user) {
+			res.status(400).send('This user is already exists.');
+			return;
+		}
+
+		const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+		const newUser = new User({
+			name: req.body.name,
+			username: req.body.username,
+			email: req.body.email,
+			password: hashedPassword
+		});
+
+		await newUser.save();
+		res.status(201).send('Success');
 	}
-
-	const hashedPassword = await bcrypt.hash(req.body.password, 10);
-
-	const newUser = new User({
-		name: req.body.name,
-		username: req.body.username,
-		email: req.body.email,
-		password: hashedPassword
-	});
-
-	await newUser.save();
-	res.status(201).send('Success');
-});
+);
 
 router.post('/login', validator(login), async (req: Request, res: Response) => {
 	const user = await User.findOne({
-		$or: [
-			{ username: req.body.user },
-			{ email: req.body.user }
-		]
+		$or: [{ username: req.body.user }, { email: req.body.user }]
 	});
 
 	if (!user) {
@@ -52,9 +53,13 @@ router.post('/login', validator(login), async (req: Request, res: Response) => {
 		return;
 	}
 
-	const token: string = jwt.sign({ id: user.id, name: user.username }, process.env.JWT_SECRET as string, {
-		expiresIn: '1d'
-	});
+	const token: string = jwt.sign(
+		{ id: user.id, name: user.username },
+		process.env.JWT_SECRET as string,
+		{
+			expiresIn: '1d'
+		}
+	);
 
 	res.status(200).send(token);
 });
