@@ -54,7 +54,7 @@ router.post('/login', validator(login), async (req: Request, res: Response) => {
 	}
 
 	const token: string = jwt.sign(
-		{ id: user.id, name: user.username },
+		{ id: user.id, user: user.username },
 		process.env.JWT_SECRET as string,
 		{
 			expiresIn: '1d'
