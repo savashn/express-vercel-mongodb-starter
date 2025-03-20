@@ -28,8 +28,8 @@ describe('Create a user, login, return and delete.', () => {
 		const res = await request(app).post('/post/login').send(user);
 
 		expect(res.status).toBe(200);
-		expect(res.body.token).toBeDefined();
-		testAuthToken = res.body.token;
+		expect(typeof res.text).toBe('string');
+		testAuthToken = res.text;
 	});
 
 	it('Should return a list of users', async () => {
@@ -62,6 +62,6 @@ describe('Create a user, login, return and delete.', () => {
 			.delete('/delete/user/testuser')
 			.set('x-auth-token', testAuthToken);
 
-		expect(res.status).toBe(200);
+		expect(res.status).toBe(204);
 	});
 });

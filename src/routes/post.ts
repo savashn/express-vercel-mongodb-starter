@@ -4,6 +4,8 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import validator from '../middlewares/validator';
 import { login, register } from '../schemas/post';
+import Post from '../db/post';
+import { auth } from '../middlewares/authenticator';
 
 const router = Router();
 
@@ -28,7 +30,6 @@ router.post('/register', validator(register), async (req: Request, res: Response
 
 	await newUser.save();
 	res.status(201).send('Success');
-	return;
 });
 
 router.post('/login', validator(login), async (req: Request, res: Response) => {
@@ -55,8 +56,22 @@ router.post('/login', validator(login), async (req: Request, res: Response) => {
 		expiresIn: '1d'
 	});
 
-	res.status(200).send({ token });
-	return;
+	res.status(200).send(token);
+});
+
+router.post('/post', auth, async (req: Request, res: Response) => {
+	if (!req.user) {
+		res.status(500).send('An error occured while deleting the user');
+		return;
+	}
+
+	const post = new Post({
+		post: req.body.post,
+		user: req.user.id
+	});
+
+	await post.save();
+	res.status(201).send('Success!');
 });
 
 export default router;

@@ -36,7 +36,6 @@ router.put('/password', auth, validator(password), async (req: Request, res: Res
 	await user.save();
 
 	res.status(200).send('Password updated successfully');
-	return;
 });
 
 export default router;
