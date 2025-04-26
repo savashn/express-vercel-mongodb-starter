@@ -1,14 +1,14 @@
-## express-vercel-mongodb-stack
+## express-vercel-mongodb-starter
 
-A boilerplate to build serverless API's on Vercel with Express, TypeScript and MongoDB.
+A starter kit to build serverless APIs on Vercel with Express, TypeScript and Mongoose.
 
 ## Installation
 
 ### 0. Clone this repository and install all dependencies
 
 ```sh
-git clone https://github.com/savashn/express-vercel-mongodb-stack.git
-cd express-vercel-mongodb-stack
+git clone https://github.com/savashn/express-vercel-mongodb-starter.git
+cd express-vercel-mongodb-starter
 npm install
 ```
 
